@@ -8,10 +8,10 @@ function IndexPage() {
   return (
     <Layout>
       <SEO
-        keywords={[`gatsby`, `tailwind`, `react`, `tailwindcss`]}
+        keywords={[`tfl`, `london travel`]}
         title="Home"
       />
-
+ 
       <section className="text-center">
         <img
           alt="Cat and human sitting on a couch"
@@ -20,18 +20,18 @@ function IndexPage() {
         />
 
         <h2 className="bg-yellow-400 text-2xl font-bold inline-block my-8 p-3">
-          Hey there! Welcome to your first Gatsby site.
+         COVD-19 Updates
         </h2>
 
         <p className="leading-loose">
-          This is a barebones starter for Gatsby styled using{` `}
+          Please visit this link{` `}
           <a
             className="font-bold no-underline text-gray-900"
-            href="https://tailwindcss.com/"
+            href="https://tfl.gov.uk/"
           >
-            Tailwind
+            Tfl.gov.uk
           </a>
-          , a utility-first CSS framework.
+          
         </p>
       </section>
     </Layout>
