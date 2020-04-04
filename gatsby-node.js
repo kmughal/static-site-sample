@@ -3,12 +3,14 @@ exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
   const myData = {
     key: 123,
     foo: `The foo field of 123`,
-    bar: `Baz`
+    bar: `Baz`,
+    name : "page1"
   }
   const myData1 = {
     key: 1234,
     foo: `The foo field of 1234`,
-    bar: `Baz1`
+    bar: `Baz1`,
+    name: "page2"
   }
 
   const parent = {
@@ -107,3 +109,66 @@ async function onCreateNode({
 }
 
 exports.onCreateNode = onCreateNode
+
+
+const path = require("path")
+const template = path.resolve("src/components/FakeComponent.js")
+exports.createPages = ({ graphql, actions }) => {
+  const { createPage } = actions
+
+  return graphql(`query MyQuery {
+      generalInformation {
+        childrenType1 {
+          id
+          foo
+          bar
+          name
+        }
+      }
+    }
+    `).then(d => {
+
+      // var d = {
+      //     "data": {
+      //         "generalInformation": {
+      //             "childrenType1": [
+      //                 {
+      //                     "id": "e7e4310c-5fb2-5e74-8260-90adca933255",
+      //                     "foo": "The foo field of 123",
+      //                     "bar": "Baz"
+      //                 },
+      //                 {
+      //                     "id": "f87d2455-9720-5d22-820e-1d2116606ea7",
+      //                     "foo": "The foo field of 1234",
+      //                     "bar": "Baz1"
+      //                 }
+      //             ]
+      //         }
+      //     }
+      // }
+
+      const data = d.data.generalInformation.childrenType1
+      data.forEach(d => {
+         console.log("creating page for " , JSON.stringify(d,null,2))
+
+          createPage({
+              // Path for this page — required
+              path: `${d.name}`,
+              component: template,
+              context: {
+                ...d
+                // Add optional context data to be inserted
+                // as props into the page component..
+                //
+                // The context data can also be used as
+                // arguments to the page GraphQL query.
+                //
+                // The page "path" is always available as a GraphQL
+                // argument.
+              },
+            })
+      })
+
+  }).catch(e => console.log(e))
+}
+
