@@ -1,51 +1,67 @@
 exports.sourceNodes = ({ actions, createNodeId, createContentDigest }) => {
-
-  const { createNode } = actions
-
   // Data can come from anywhere, but for now create it manually
   const myData = {
     key: 123,
-    foo: `The foo field of my node`,
+    foo: `The foo field of 123`,
     bar: `Baz`
   }
   const myData1 = {
     key: 1234,
-    foo: `The foo field of my node`,
-    bar: `Baz`
+    foo: `The foo field of 1234`,
+    bar: `Baz1`
   }
+
+  const parent = {
+    id: createNodeId("parent"),
+    name: "general information",
+    internal: {
+      type: "generalInformation",
+      contentDigest: createContentDigest("parent-node")
+    },
+    children: []
+  }
+
 
   const nodeContent = JSON.stringify(myData)
 
   const nodeMeta = {
     id: createNodeId(`my-data-${myData.key}`),
-    parent: null,
+    parent: parent.id,
     children: [],
     internal: {
-      type: `MyNodeType`,
+      type: "Type1",
       mediaType: `text/html`,
       content: nodeContent,
       contentDigest: createContentDigest(myData)
     }
   }
 
-  const node = Object.assign({}, myData, nodeMeta)
-  createNode(node)
+
+  const nodeContent1 = JSON.stringify(myData1)
 
 
   const nodeMeta1 = {
     id: createNodeId(`my-data-${myData1.key}`),
-    parent: null,
+    parent: parent.id,
     children: [],
     internal: {
-      type: `MyNodeType1`,
+      type: "Type1",
       mediaType: `text/html`,
-      content: nodeContent,
+      content: nodeContent1,
       contentDigest: createContentDigest(myData1)
     }
   }
+  const child = Object.assign({}, myData, nodeMeta)
+  const child1 = Object.assign({}, myData1, nodeMeta1)
 
-  const node1 = Object.assign({}, myData1, nodeMeta1)
-  createNode(node1)
+
+
+  actions.createNode(parent)
+  actions.createNode(child)
+  actions.createNode(child1)
+  actions.createParentChildLink({ parent, child })
+  actions.createParentChildLink({ parent, child: child1 })
+
 }
 
 
@@ -78,7 +94,7 @@ async function onCreateNode({
   if (node.internal.mediaType !== `text/yaml`) {
     return
   }
-  console.log("in")
+
   const content = await loadNodeContent(node)
   const parsedContent = jsYaml.load(content)
   parsedContent.forEach((obj, i) => {
