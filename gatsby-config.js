@@ -36,6 +36,12 @@ module.exports = {
         purgeOnly: [`src/css/style.css`]
       }
     },
-    `gatsby-plugin-offline`
+    `gatsby-plugin-offline`,
+    {
+      resolve : "gatsby-source-filesystem",
+      options : {
+        path : "./src/data"
+      }
+    }
   ]
 };
